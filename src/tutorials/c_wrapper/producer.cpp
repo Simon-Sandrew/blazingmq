@@ -61,9 +61,9 @@ void produce(z_bmqa_Session* session)
                                   &openStatus);
 
     const char* messages[] = {"Hello world!",
-                              "message 4",
-                              "message 5",
-                              "message 6",
+                              "message 1",
+                              "message 2",
+                              "message 3",
                               "Good Bye!"};
     for (int idx = 0; idx < 5; ++idx) {
         postEvent(messages[idx], queueId, session);
@@ -72,6 +72,8 @@ void produce(z_bmqa_Session* session)
     z_bmqa_Session__closeQueueSync(session, queueId, 0, &closeStatus);
 
     z_bmqa_QueueId__delete(&queueId);
+    z_bmqa_OpenQueueStatus__delete(&openStatus);
+    z_bmqa_CloseQueueStatus__delete(&closeStatus);
 }
 
 int main()

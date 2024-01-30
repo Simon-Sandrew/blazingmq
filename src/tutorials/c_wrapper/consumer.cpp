@@ -111,6 +111,7 @@ void onMessageEvent(const z_bmqa_MessageEvent* messageEvent, void* data)
             }
 
             delete[] messageGUID_str;
+            delete[] data;
         }
 
         // Confirm reception of the messages so that it can be deleted from the
@@ -130,6 +131,8 @@ void onMessageEvent(const z_bmqa_MessageEvent* messageEvent, void* data)
 
             z_bmqa_ConfirmEventBuilder__reset(confirmBuilder);
         }
+
+        z_bmqa_MessageIterator__delete(&msgIter);
     }
     else {
         const char* eventType = z_bmqt_MessageEventType::toAscii(
