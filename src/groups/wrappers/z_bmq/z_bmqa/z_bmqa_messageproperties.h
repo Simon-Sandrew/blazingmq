@@ -33,56 +33,8 @@ int z_bmqa_MessageProperties__setPropertyAsBool(
     const char*               name,
     bool                      value);
 
-int z_bmqa_MessageProperties__(z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(z_bmqa_MessageProperties* properties_obj);
-
-// int z_bmqa_MessageProperties__(z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
 int z_bmqa_MessageProperties__totalSize(
     const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
-
-int z_bmqa_MessageProperties__(const z_bmqa_MessageProperties* properties_obj);
 
 #if defined(__cplusplus)
 }
