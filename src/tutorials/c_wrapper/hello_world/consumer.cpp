@@ -36,6 +36,10 @@
 #include <bsls_annotation.h>
 #include <bsls_keyword.h>
 #include <bsls_timeinterval.h>
+#include <bsl_string.h>
+#include <bsl_functional.h>
+
+#include <bmqt_resultcode.h>
 
 #include <z_bmqa_confirmeventbuilder.h>
 #include <z_bmqa_messageevent.h>
@@ -62,15 +66,16 @@ void signalHandler(int signal)
     shutdownHandler(signal);
 }
 
-typedef struct SetSessionArgs {
+typedef struct EventHandlerContext {
     z_bmqa_Session* session;
-} SetSessionArgs;
+} EventHandlerContext;
 
 void onMessageEvent(const z_bmqa_MessageEvent* messageEvent, void* data)
 // Handle the specified 'messageEvent'
 {
+    EventHandlerContext* context = reinterpret_cast<EventHandlerContext*>(data);
     // Load a ConfirmEventBuilder from the session
-    z_bmqa_Session* session = *(static_cast<z_bmqa_Session**>(data));
+    z_bmqa_Session* session = context->session;
     z_bmqa_ConfirmEventBuilder* confirmBuilder;
     z_bmqa_ConfirmEventBuilder__create(&confirmBuilder);
 
@@ -152,14 +157,6 @@ void onSessionEvent(const z_bmqa_SessionEvent* sessionEvent, void* data)
     z_bmqa_SessionEvent__toString(sessionEvent, &out);
     bsl::cout << "Got session event: " << bsl::string(out) << "\n";
     delete[] out;
-}
-
-void setSession(void* args, void* eventHandlerData)
-{
-    SetSessionArgs*  args_p    = static_cast<SetSessionArgs*>(args);
-    z_bmqa_Session** session_p = static_cast<z_bmqa_Session**>(
-        eventHandlerData);
-    *session_p = args_p->session;
 }
 
 //=============================================================================
@@ -257,18 +254,12 @@ int main(BSLS_ANNOTATION_UNUSED int         argc,
     // optional 'SessionOptions' object.
 
     z_bmqa_Session*             session;
-    z_bmqa_SessionEventHandler* eventHandler;
-    z_bmqa_SessionEventHandler__create(&eventHandler,
-                                       onSessionEvent,
-                                       onMessageEvent,
-                                       sizeof(z_bmqa_Session*));
-    z_bmqa_Session__createAsync(&session, eventHandler, NULL);
-
-    SetSessionArgs setSessionArgs;
-    setSessionArgs.session = session;
-    z_bmqa_SessionEventHandler__callCustomFunction(eventHandler,
-                                                   setSession,
-                                                   &setSessionArgs);
+    z_bmqa_SessionEventHandlers eventHandlers;
+    eventHandlers.onMessageEvent = onMessageEvent;
+    eventHandlers.onSessionEvent = onSessionEvent;
+    EventHandlerContext context;
+    z_bmqa_Session__createAsync(&session, eventHandlers, &context, NULL);
+    context.session = session;
 
     int rc = z_bmqa_Session__start((z_bmqa_Session*)(session), 0);
     if (rc != 0) {

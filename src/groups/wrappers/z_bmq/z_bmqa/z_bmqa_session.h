@@ -24,7 +24,6 @@ extern "C" {
 #include <z_bmqt_sessionoptions.h>
 #include <z_bmqt_uri.h>
 
-typedef struct z_bmqa_SessionEventHandler z_bmqa_SessionEventHandler;
 
 typedef void (*z_bmqa_OnSessionEventCb)(
     const z_bmqa_SessionEvent* sessionEvent,
@@ -34,38 +33,11 @@ typedef void (*z_bmqa_OnMessageEventCb)(
     const z_bmqa_MessageEvent* messageEvent,
     void*                      data);
 
-typedef void (*z_bmqa_SessionEventHandlerMemberFunction)(void* args,
-                                                         void* data);
+typedef struct z_bmqa_SessionEventHandlers {
+    z_bmqa_OnSessionEventCb onSessionEvent;
+    z_bmqa_OnMessageEventCb onMessageEvent;
+} z_bmqa_SessionEventHandlers;
 
-/**
- * @brief Creates a new SessionEventHandler object.
- * 
- * @param eventHandler_obj Pointer to store the created SessionEventHandler object.
- * @param onSessionEventCb Callback function for session events.
- * @param onMessageEventCb Callback function for message events.
- * @param dataSize Size of additional data to be stored with the event handler.
- * 
- * @return Returns 0 upon successful creation.
- */
-int z_bmqa_SessionEventHandler__create(
-    z_bmqa_SessionEventHandler** eventHandler_obj,
-    z_bmqa_OnSessionEventCb      onSessionEventCb,
-    z_bmqa_OnMessageEventCb      onMessageEventCb,
-    uint64_t                     dataSize);
-
-/**
- * @brief Calls a custom function within the SessionEventHandler.
- * 
- * @param eventHandler_obj Pointer to the SessionEventHandler object.
- * @param cb Custom function to be called.
- * @param args Arguments for the custom function.
- * 
- * @return Returns 0 upon successful execution.
- */
-int z_bmqa_SessionEventHandler__callCustomFunction(
-    z_bmqa_SessionEventHandler*              eventHandler_obj,
-    z_bmqa_SessionEventHandlerMemberFunction cb,
-    void*                                    args);
 
 typedef struct z_bmqa_Session z_bmqa_Session;
 
@@ -99,7 +71,8 @@ int z_bmqa_Session__create(z_bmqa_Session**             session_obj,
  * @return Returns 0 upon successful creation.
  */
 int z_bmqa_Session__createAsync(z_bmqa_Session**             session_obj,
-                                z_bmqa_SessionEventHandler*  eventHandler,
+                                z_bmqa_SessionEventHandlers  eventHandlers,
+                                void* context,
                                 const z_bmqt_SessionOptions* options);
 
 /**
@@ -281,78 +254,6 @@ int z_bmqa_Session__confirmMessages(z_bmqa_Session*             session_obj,
 
 #if defined(__cplusplus)
 }
-
-/**
- * @brief Custom session event handler class.
- * 
- * This class provides custom handling of session and message events.
- */
-class z_bmqa_CustomSessionEventHandler
-: BloombergLP::bmqa::SessionEventHandler {
-  private:
-    z_bmqa_OnSessionEventCb onSessionEventCb; /**< Callback function for session events. */
-    z_bmqa_OnMessageEventCb onMessageEventCb; /**< Callback function for message events. */
-    void*                   data;             /**< Custom data pointer. */
-    uint64_t                mSize;            /**< Size of the custom data. */
-
-    BloombergLP::bslmt::Mutex mutex; /**< Mutex for thread safety. */
-
-  public:
-    /**
-     * @brief Constructor for z_bmqa_CustomSessionEventHandler.
-     * 
-     * @param onSessionEventCb Callback function for session events.
-     * @param onMessageEventCb Callback function for message events.
-     * @param mSize Size of the custom data.
-     */
-    z_bmqa_CustomSessionEventHandler(z_bmqa_OnSessionEventCb onSessionEventCb,
-                                     z_bmqa_OnMessageEventCb onMessageEventCb,
-                                     uint64_t                mSize);
-
-    /**
-     * @brief Destructor for z_bmqa_CustomSessionEventHandler.
-     */
-    ~z_bmqa_CustomSessionEventHandler();
-
-    /**
-     * @brief Handles session events.
-     * 
-     * @param sessionEvent Session event object.
-     */
-    void onSessionEvent(const BloombergLP::bmqa::SessionEvent& sessionEvent);
-
-    /**
-     * @brief Handles message events.
-     * 
-     * @param messageEvent Message event object.
-     */
-    void onMessageEvent(const BloombergLP::bmqa::MessageEvent& messageEvent);
-
-    /**
-     * @brief Calls a custom member function with provided arguments.
-     * 
-     * @param function Custom member function to call.
-     * @param args Arguments to pass to the custom member function.
-     */
-    void callCustomFunction(z_bmqa_SessionEventHandlerMemberFunction function,
-                            void*                                    args);
-
-    /**
-     * @brief Locks the mutex for thread safety.
-     */
-    void lock();
-
-    /**
-     * @brief Unlocks the mutex.
-     */
-    void unlock();
-
-    /**
-     * @brief Tries to lock the mutex.
-     */
-    void tryLock();
-};
 #endif
 
 #endif
-

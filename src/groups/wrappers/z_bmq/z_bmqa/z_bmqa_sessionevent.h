@@ -111,4 +111,3 @@ int z_bmqa_SessionEvent__toString(const z_bmqa_SessionEvent* event_obj,
 #endif
 
 #endif
-`
