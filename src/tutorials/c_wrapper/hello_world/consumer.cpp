@@ -29,15 +29,15 @@
 // process messages at a different pace than the Producer.
 
 // BDE
+#include <bsl_functional.h>
 #include <bsl_iostream.h>
+#include <bsl_string.h>
 #include <bslmt_condition.h>
 #include <bslmt_lockguard.h>
 #include <bslmt_mutex.h>
 #include <bsls_annotation.h>
 #include <bsls_keyword.h>
 #include <bsls_timeinterval.h>
-#include <bsl_string.h>
-#include <bsl_functional.h>
 
 #include <bmqt_resultcode.h>
 
@@ -73,9 +73,10 @@ typedef struct EventHandlerContext {
 void onMessageEvent(const z_bmqa_MessageEvent* messageEvent, void* data)
 // Handle the specified 'messageEvent'
 {
-    EventHandlerContext* context = reinterpret_cast<EventHandlerContext*>(data);
+    EventHandlerContext* context = reinterpret_cast<EventHandlerContext*>(
+        data);
     // Load a ConfirmEventBuilder from the session
-    z_bmqa_Session* session = context->session;
+    z_bmqa_Session*             session = context->session;
     z_bmqa_ConfirmEventBuilder* confirmBuilder;
     z_bmqa_ConfirmEventBuilder__create(&confirmBuilder);
 

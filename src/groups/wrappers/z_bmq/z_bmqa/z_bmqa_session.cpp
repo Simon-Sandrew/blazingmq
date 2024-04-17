@@ -20,13 +20,17 @@ class CustomEventHandler : public BloombergLP::bmqa::SessionEventHandler {
     {
     }
 
-    void onMessageEvent(const BloombergLP::bmqa::MessageEvent& messageEvent) {
-        const z_bmqa_MessageEvent* messageEvent_p = reinterpret_cast<const z_bmqa_MessageEvent*>(&messageEvent);
+    void onMessageEvent(const BloombergLP::bmqa::MessageEvent& messageEvent)
+    {
+        const z_bmqa_MessageEvent* messageEvent_p =
+            reinterpret_cast<const z_bmqa_MessageEvent*>(&messageEvent);
         d_eventHandlers.onMessageEvent(messageEvent_p, d_context);
     }
 
-    void onSessionEvent(const BloombergLP::bmqa::SessionEvent& sessionEvent) {
-        const z_bmqa_SessionEvent* sessionEvent_p = reinterpret_cast<const z_bmqa_SessionEvent*>(&sessionEvent);
+    void onSessionEvent(const BloombergLP::bmqa::SessionEvent& sessionEvent)
+    {
+        const z_bmqa_SessionEvent* sessionEvent_p =
+            reinterpret_cast<const z_bmqa_SessionEvent*>(&sessionEvent);
         d_eventHandlers.onSessionEvent(sessionEvent_p, d_context);
     }
 };
@@ -63,24 +67,22 @@ int z_bmqa_Session__create(z_bmqa_Session**             session_obj,
 }
 
 int z_bmqa_Session__createAsync(z_bmqa_Session**             session_obj,
-                                z_bmqa_SessionEventHandlers eventHandlers,
-                                void* context,
+                                z_bmqa_SessionEventHandlers  eventHandlers,
+                                void*                        context,
                                 const z_bmqt_SessionOptions* options)
 {
     using namespace BloombergLP;
 
-    bmqa::Session*             session_p;
-    bslma::ManagedPtr<bmqa::SessionEventHandler> eventHandler_mp(new CustomEventHandler(eventHandlers, context));
+    bmqa::Session*                               session_p;
+    bslma::ManagedPtr<bmqa::SessionEventHandler> eventHandler_mp(
+        new CustomEventHandler(eventHandlers, context));
     if (options) {
         const bmqt::SessionOptions* options_p =
             reinterpret_cast<const bmqt::SessionOptions*>(options);
-        session_p = new bmqa::Session(
-            eventHandler_mp,
-            *options_p);
+        session_p = new bmqa::Session(eventHandler_mp, *options_p);
     }
     else {
-        session_p = new bmqa::Session(
-            eventHandler_mp);
+        session_p = new bmqa::Session(eventHandler_mp);
     }
     *session_obj = reinterpret_cast<z_bmqa_Session*>(session_p);
     return 0;
